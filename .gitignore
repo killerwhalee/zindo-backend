@@ -1,0 +1,19 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pot
+
+# Private folder
+_logs/
+_media/
+_static/
+_temp/
+
+# Environment value
+.venv/
+.env
+
+# Databases
+*/migrations/*
+!*/migrations/__init__.py
+*.sqlite3
