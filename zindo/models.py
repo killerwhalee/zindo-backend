@@ -33,9 +33,9 @@ class TextBook(models.Model):
         null=True,
         blank=True,
     )
-    image = models.ImageField(
-        "교재 이미지",
-        upload_to=uuid_filepath,
+    image = models.URLField(
+        "교재 이미지 링크",
+        max_length=200,
         null=True,
         blank=True,
     )
