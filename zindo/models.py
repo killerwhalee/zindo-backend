@@ -80,7 +80,7 @@ class Record(models.Model):
     created_at = models.DateTimeField(
         "학습일",
         auto_now=False,
-        auto_now_add=False,
+        auto_now_add=True,
     )
     progress = models.JSONField(
         "진도상황",

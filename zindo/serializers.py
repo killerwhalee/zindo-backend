@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from . import models
+from . import models, utils
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -47,8 +47,7 @@ class SheetSerializer(serializers.ModelSerializer):
         source="student",
         read_only=True,
     )
-    textbook = serializers.PrimaryKeyRelatedField(
-        queryset=models.TextBook.objects.all(),
+    isbn = serializers.CharField(
         write_only=True,
     )
     textbook_detail = TextBookSerializer(
@@ -63,7 +62,7 @@ class SheetSerializer(serializers.ModelSerializer):
             "id",
             "student",
             "student_detail",
-            "textbook",
+            "isbn",
             "textbook_detail",
             "pace",
             "is_finished",
@@ -72,6 +71,46 @@ class SheetSerializer(serializers.ModelSerializer):
             "student_detail",
             "textbook_detail",
         ]
+
+    def validate(self, data):
+        """Check isbn and convert into correct textbook object
+
+        This validator validates isbn by following process:
+
+        1. Check if textbook with given isbn exists on database.
+        2. If not, call book search API and fetch book data from it.
+        3. If book search was successful, create new textbook and return.
+        4. If book search was not successful, raise validation error.
+        """
+
+        # Pop isbn from payload. It will be converted into `textbook` later
+        isbn = data.pop("isbn")
+
+        # Check if textbook with given isbn exists on database
+        if (qs := models.TextBook.objects.filter(isbn=isbn)).exists():
+            data["textbook"] = qs.first()
+            return data
+
+        # If not, call book search API with given isbn
+        search_res = utils.search_book(isbn)
+        [search_res.pop(key) for key in ["object", "id"]]
+
+        # Raise error if no books were found, or something goes wrong with API
+        if not search_res:
+            raise serializers.ValidationError(
+                "No books were found with given isbn.",
+            )
+
+        # Create new textbook using fetched data and add to data
+        textbook = models.TextBook.objects.create(**search_res)
+        data["textbook"] = textbook
+
+        return data
+
+    def create(self, validated_data):
+        print(validated_data)
+
+        return super().create(validated_data)
 
     def get_object(self, _):
         return "sheet"
