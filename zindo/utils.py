@@ -20,7 +20,7 @@ def get_subject(title):
 
     # keyword pool
     pool = {
-        "국어": ["국어", "독해", "문법", "읽기", "쓰기"],
+        "국어": ["국어", "독해", "문법", "읽기", "쓰기", "한글"],
         "수학": ["수학", "연산", "계산"],
     }
 
@@ -67,7 +67,7 @@ def search_book(isbn):
     # Get first data from items and serialize
     item = items[0]
     title = item.get("title", "")
-    subject = get_subject(title)
+    subject = get_subject(title) or "없음"
     isbn = item.get("isbn", "")
     image = item.get("image", "")
 
