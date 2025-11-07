@@ -1,6 +1,6 @@
 from django.db import models
-
-from core.utils import uuid_filepath
+from django.core.exceptions import ValidationError
+from . import utils
 
 
 class Student(models.Model):
@@ -16,6 +16,32 @@ class Student(models.Model):
 
     def __str__(self):
         return f"[{self.__class__.__name__} #{self.id:04d}] {self.name}"
+
+
+class TextBookManager(models.Manager):
+    def create_from_isbn(self, isbn):
+        # Check if textbook with given isbn exists on database
+        if self.filter(isbn=isbn).exists():
+            raise ValidationError(
+                "Textbook with given isbn already exists.",
+            )
+
+        # If not, call book search API with given isbn
+        search_res = utils.search_book(isbn)
+        [search_res.pop(key, None) for key in ["object", "id"]]
+
+        print(search_res)
+
+        # Raise error if no books were found, or something goes wrong with API
+        if not search_res:
+            raise ValidationError(
+                "No books were found with given isbn.",
+            )
+
+        # Create new textbook using fetched data and add to data
+        textbook = self.create(**search_res)
+
+        return textbook
 
 
 class TextBook(models.Model):
@@ -39,6 +65,8 @@ class TextBook(models.Model):
         null=True,
         blank=True,
     )
+
+    objects = TextBookManager()
 
     def __str__(self):
         return f"[{self.__class__.__name__} #{self.id:04d}] {self.name} {self.subject}"
