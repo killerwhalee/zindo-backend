@@ -6,7 +6,7 @@ from . import models, serializers, utils
 
 
 class StudentViewSet(viewsets.ModelViewSet):
-    queryset = models.Student.objects.all()
+    queryset = models.Student.objects.all().order_by("name")
     serializer_class = serializers.StudentSerializer
 
 
@@ -40,6 +40,6 @@ class SheetViewSet(viewsets.ModelViewSet):
 
 
 class RecordViewSet(viewsets.ModelViewSet):
-    queryset = models.Record.objects.all()
+    queryset = models.Record.objects.all().order_by("created_at")
     serializer_class = serializers.RecordSerializer
     filterset_fields = ["sheet__id"]
