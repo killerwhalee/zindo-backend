@@ -111,7 +111,12 @@ class SheetSerializer(serializers.ModelSerializer):
         """
 
         # Pop isbn from payload. It will be converted into `textbook` later
-        isbn = data.pop("isbn")
+        isbn = data.pop("isbn", None)
+
+        # Skip textbook validation if request is partial and
+        # does not contain isbn for field.
+        if isbn is None and self.partial:
+            return data
 
         # Check if textbook with given isbn exists on database
         if (qs := models.TextBook.objects.filter(isbn=isbn)).exists():
