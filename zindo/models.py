@@ -8,14 +8,17 @@ class Student(models.Model):
         "이름",
         max_length=8,
     )
-    birthday = models.DateField(
-        "생년월일",
+    admission_date = models.DateField(
+        "입학연도",
         auto_now=False,
         auto_now_add=False,
     )
 
     def __str__(self):
-        return f"[{self.__class__.__name__} #{self.id:04d}] {self.name}"
+        return (
+            f"[{self.__class__.__name__} #{self.id:04d}] "
+            f"{self.name} {self.admission_date}"
+        )
 
 
 class TextBookManager(models.Manager):

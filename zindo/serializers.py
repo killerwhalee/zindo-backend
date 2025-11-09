@@ -2,9 +2,12 @@ from rest_framework import serializers
 
 from . import models, utils
 
+import datetime
+
 
 class StudentSerializer(serializers.ModelSerializer):
     object = serializers.SerializerMethodField()
+    grade = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Student
@@ -12,11 +15,22 @@ class StudentSerializer(serializers.ModelSerializer):
             "object",
             "id",
             "name",
-            "birthday",
+            "grade",
+        ]
+        read_only_fields = [
+            "object",
+            "id",
+            "grade",
         ]
 
     def get_object(self, _):
         return "student"
+
+    def get_grade(self, obj):
+        days = (datetime.date.today() - obj.admission_date).days
+        grade = int(days / 365.25) + 1
+
+        return grade
 
 
 class TextBookSerializer(serializers.ModelSerializer):
@@ -31,6 +45,10 @@ class TextBookSerializer(serializers.ModelSerializer):
             "subject",
             "isbn",
             "image",
+        ]
+        read_only_fields = [
+            "object",
+            "id",
         ]
 
     def get_object(self, _):
@@ -68,6 +86,8 @@ class SheetSerializer(serializers.ModelSerializer):
             "is_finished",
         ]
         read_only_fields = [
+            "object",
+            "id",
             "student_detail",
             "textbook_detail",
         ]
@@ -81,6 +101,13 @@ class SheetSerializer(serializers.ModelSerializer):
         2. If not, call book search API and fetch book data from it.
         3. If book search was successful, create new textbook and return.
         4. If book search was not successful, raise validation error.
+
+        Then, validator validates textbook selected by:
+
+        1. Check if active sheet with given textbook already exists.
+
+        It is possible to review the same book.
+        So it is allowed to write sheet with the same book if the former book was finished.
         """
 
         # Pop isbn from payload. It will be converted into `textbook` later
@@ -88,29 +115,44 @@ class SheetSerializer(serializers.ModelSerializer):
 
         # Check if textbook with given isbn exists on database
         if (qs := models.TextBook.objects.filter(isbn=isbn)).exists():
-            data["textbook"] = qs.first()
-            return data
+            textbook = qs.first()
 
         # If not, call book search API with given isbn
-        search_res = utils.search_book(isbn)
-        [search_res.pop(key) for key in ["object", "id"]]
+        else:
+            search_res = utils.search_book(isbn)
 
-        # Raise error if no books were found, or something goes wrong with API
-        if not search_res:
-            raise serializers.ValidationError(
-                "No books were found with given isbn.",
-            )
+            # Raise error if no books were found,
+            # or something goes wrong with API
+            if not search_res:
+                raise serializers.ValidationError(
+                    "No books were found with given isbn.",
+                )
 
-        # Create new textbook using fetched data and add to data
-        textbook = models.TextBook.objects.create(**search_res)
+            # Pop unnecessary fields
+            for key in ["object", "id"]:
+                search_res.pop(key, None)
+
+            # Create new textbook using fetched data and add to data
+            textbook = models.TextBook.objects.create(**search_res)
+
+        # Add textbook fields to data.
         data["textbook"] = textbook
 
+        # Check textbook is already exists in active sheet.
+        student = data["student"]
+
+        print(textbook, student)
+
+        if models.Sheet.objects.filter(
+            student=student,
+            textbook=textbook,
+            is_finished=False,
+        ).exists():
+            raise serializers.ValidationError(
+                "Active sheet already exists with given textbook.",
+            )
+
         return data
-
-    def create(self, validated_data):
-        print(validated_data)
-
-        return super().create(validated_data)
 
     def get_object(self, _):
         return "sheet"
@@ -137,6 +179,10 @@ class RecordSerializer(serializers.ModelSerializer):
             "created_at",
             "progress",
             "note",
+        ]
+        read_only_fields = [
+            "object",
+            "id",
         ]
 
     def get_object(self, _):
