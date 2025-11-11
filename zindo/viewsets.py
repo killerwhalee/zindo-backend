@@ -40,6 +40,6 @@ class SheetViewSet(viewsets.ModelViewSet):
 
 
 class RecordViewSet(viewsets.ModelViewSet):
-    queryset = models.Record.objects.all().order_by("created_at")
+    queryset = models.Record.objects.all().order_by("-created_at")
     serializer_class = serializers.RecordSerializer
     filterset_fields = ["sheet__id"]
