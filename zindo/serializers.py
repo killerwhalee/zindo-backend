@@ -8,6 +8,9 @@ import datetime
 class StudentSerializer(serializers.ModelSerializer):
     object = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
+    is_recorded = serializers.BooleanField(
+        read_only=True,
+    )
 
     class Meta:
         model = models.Student
@@ -16,6 +19,7 @@ class StudentSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "grade",
+            "is_recorded",
         ]
         read_only_fields = [
             "object",
@@ -72,6 +76,9 @@ class SheetSerializer(serializers.ModelSerializer):
         source="textbook",
         read_only=True,
     )
+    is_recorded = serializers.BooleanField(
+        read_only=True,
+    )
 
     class Meta:
         model = models.Sheet
@@ -83,6 +90,7 @@ class SheetSerializer(serializers.ModelSerializer):
             "isbn",
             "textbook_detail",
             "pace",
+            "is_recorded",
             "is_finished",
         ]
         read_only_fields = [
