@@ -33,8 +33,6 @@ class TextBookManager(models.Manager):
         search_res = utils.search_book(isbn)
         [search_res.pop(key, None) for key in ["object", "id"]]
 
-        print(search_res)
-
         # Raise error if no books were found, or something goes wrong with API
         if not search_res:
             raise ValidationError(
@@ -86,14 +84,13 @@ class Sheet(models.Model):
         verbose_name="교재",
         on_delete=models.PROTECT,
     )
-
     pace = models.SmallIntegerField(
         "하루 목표 학습량",
         null=True,
         blank=True,
     )
     is_finished = models.BooleanField(
-        "완료 여부",
+        "완료된 기록지",
         default=False,
     )
 
@@ -107,7 +104,6 @@ class Record(models.Model):
         verbose_name="기록지",
         on_delete=models.CASCADE,
     )
-
     created_at = models.DateTimeField(
         "학습일",
         auto_now=False,
