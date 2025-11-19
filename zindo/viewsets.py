@@ -2,7 +2,7 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Count, Q
 
 from . import models, serializers, utils
 
@@ -21,12 +21,28 @@ class StudentViewSet(viewsets.ModelViewSet):
             super()
             .get_queryset()
             .annotate(
-                is_recorded=~Exists(
-                    models.Sheet.objects.filter(
-                        student=OuterRef("pk"),
-                        is_finished=False,
-                    ).exclude(record__created_at__date=today)
-                )
+                count_on_progress=Count(
+                    "sheet",
+                    filter=Q(
+                        sheet__is_finished=False,
+                    ),
+                    distinct=True,
+                ),
+                count_recorded=Count(
+                    "sheet",
+                    filter=Q(
+                        sheet__is_finished=False,
+                        sheet__record__created_at__date=today,
+                    ),
+                    distinct=True,
+                ),
+                count_finished=Count(
+                    "sheet",
+                    filter=Q(
+                        sheet__is_finished=True,
+                    ),
+                    distinct=True,
+                ),
             )
         )
 

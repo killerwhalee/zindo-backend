@@ -8,7 +8,13 @@ import datetime
 class StudentSerializer(serializers.ModelSerializer):
     object = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
-    is_recorded = serializers.BooleanField(
+    count_on_progress = serializers.IntegerField(
+        read_only=True,
+    )
+    count_recorded = serializers.IntegerField(
+        read_only=True,
+    )
+    count_finished = serializers.IntegerField(
         read_only=True,
     )
 
@@ -19,7 +25,9 @@ class StudentSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "grade",
-            "is_recorded",
+            "count_on_progress",
+            "count_finished",
+            "count_recorded",
         ]
         read_only_fields = [
             "object",
