@@ -79,6 +79,15 @@ class SheetSerializer(serializers.ModelSerializer):
     )
     isbn = serializers.CharField(
         write_only=True,
+        required=False,
+    )
+    name = serializers.CharField(
+        write_only=True,
+        required=False,
+    )
+    subject = serializers.CharField(
+        write_only=True,
+        required=False,
     )
     textbook_detail = TextBookSerializer(
         source="textbook",
@@ -95,8 +104,10 @@ class SheetSerializer(serializers.ModelSerializer):
             "id",
             "student",
             "student_detail",
-            "isbn",
             "textbook_detail",
+            "isbn",
+            "name",
+            "subject",
             "pace",
             "is_recorded",
             "is_finished",
@@ -104,8 +115,6 @@ class SheetSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "object",
             "id",
-            "student_detail",
-            "textbook_detail",
         ]
 
     def validate(self, data):
@@ -113,10 +122,12 @@ class SheetSerializer(serializers.ModelSerializer):
 
         This validator validates isbn by following process:
 
-        1. Check if textbook with given isbn exists on database.
-        2. If not, call book search API and fetch book data from it.
-        3. If book search was successful, create new textbook and return.
-        4. If book search was not successful, raise validation error.
+        1. Check if isbn field is provided.
+        2. If not, get or create textbook from `name` and `subject`.
+        3. Check if textbook with given isbn exists on database.
+        4. If not, call book search API and fetch book data from it.
+        5. If book search was successful, create new textbook and return.
+        6. If book search was not successful, raise validation error.
 
         Then, validator validates textbook selected by:
 
@@ -129,40 +140,57 @@ class SheetSerializer(serializers.ModelSerializer):
         # Pop isbn from payload. It will be converted into `textbook` later
         isbn = data.pop("isbn", None)
 
-        # Skip textbook validation if request is partial and
-        # does not contain isbn for field.
-        if isbn is None and self.partial:
-            return data
+        # isbn is not provided - manual mode
+        if isbn is None:
+            # Skip textbook validation if request is partial
+            if self.partial:
+                return data
 
-        # Check if textbook with given isbn exists on database
-        if (qs := models.TextBook.objects.filter(isbn=isbn)).exists():
-            textbook = qs.first()
+            # Fetch textbook name and subject
+            name = data.pop("name", None)
+            subject = data.pop("subject", None)
 
-        # If not, call book search API with given isbn
-        else:
-            search_res = utils.search_book(isbn)
-
-            # Raise error if no books were found,
-            # or something goes wrong with API
-            if not search_res:
+            # Check if both fields are present.
+            if name is None or subject is None:
                 raise serializers.ValidationError(
-                    "No books were found with given isbn.",
+                    "Both `name` and `subject` are required when `isbn` is not provided."
                 )
 
-            # Pop unnecessary fields
-            for key in ["object", "id"]:
-                search_res.pop(key, None)
+            # Get or create textbook
+            textbook, _ = models.TextBook.objects.get_or_create(
+                name=name,
+                subject=subject,
+            )
 
-            # Create new textbook using fetched data and add to data
-            textbook = models.TextBook.objects.create(**search_res)
+        # isbn is not provided - search mode
+        else:
+            # Check if textbook with given isbn exists on database
+            if (qs := models.TextBook.objects.filter(isbn=isbn)).exists():
+                textbook = qs.first()
+
+            # If not, call book search API with given isbn
+            else:
+                search_res = utils.search_book(isbn)
+
+                # Raise error if no books were found,
+                # or something goes wrong with API
+                if not search_res:
+                    raise serializers.ValidationError(
+                        "No books were found with given isbn.",
+                    )
+
+                # Pop unnecessary fields
+                for key in ["object", "id"]:
+                    search_res.pop(key, None)
+
+                # Create new textbook using fetched data and add to data
+                textbook = models.TextBook.objects.create(**search_res)
 
         # Add textbook fields to data.
         data["textbook"] = textbook
 
         # Check textbook is already exists in active sheet.
-        student = data["student"]
-
-        print(textbook, student)
+        student = data.get("student")
 
         if models.Sheet.objects.filter(
             student=student,
