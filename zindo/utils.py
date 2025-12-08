@@ -1,5 +1,5 @@
-import requests
 import environ
+import requests
 from django.conf import settings
 
 env = environ.Env()

@@ -1,5 +1,7 @@
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils import timezone
+
 from . import utils
 
 
@@ -106,8 +108,7 @@ class Record(models.Model):
     )
     created_at = models.DateTimeField(
         "학습일",
-        auto_now=False,
-        auto_now_add=True,
+        default=timezone.now
     )
     progress = models.JSONField(
         "진도상황",

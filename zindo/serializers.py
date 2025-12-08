@@ -1,8 +1,8 @@
+import datetime
+
 from rest_framework import serializers
 
 from . import models, utils
-
-import datetime
 
 
 class StudentSerializer(serializers.ModelSerializer):
