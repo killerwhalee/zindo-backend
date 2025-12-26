@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zindo', '0005_alter_sheet_pace'),
+        ("zindo", "0005_alter_sheet_pace"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='sheet',
-            name='pace',
-            field=models.SmallIntegerField(blank=True, null=True, verbose_name='하루 목표 학습량'),
+            model_name="sheet",
+            name="pace",
+            field=models.SmallIntegerField(
+                blank=True, null=True, verbose_name="하루 목표 학습량"
+            ),
         ),
     ]

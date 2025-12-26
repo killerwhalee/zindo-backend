@@ -22,8 +22,8 @@ def get_subject(title):
     pool = {
         "국어": ["국어", "독해", "문법", "읽기", "쓰기", "한글"],
         "수학": ["수학", "연산", "계산", "셈"],
-        "과학": ["과학",],
-        "영어": ["영어", "English", "english"]
+        "과학": ["과학"],
+        "영어": ["영어", "English", "english"],
     }
 
     # Run keyword search for each subject.

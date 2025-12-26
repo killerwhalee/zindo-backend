@@ -108,7 +108,7 @@ class Record(models.Model):
     )
     created_at = models.DateTimeField(
         "학습일",
-        default=timezone.now
+        default=timezone.now,
     )
     progress = models.JSONField(
         "진도상황",

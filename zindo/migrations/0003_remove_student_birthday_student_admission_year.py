@@ -5,20 +5,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zindo', '0002_alter_record_created_at'),
+        ("zindo", "0002_alter_record_created_at"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='student',
-            name='birthday',
+            model_name="student",
+            name="birthday",
         ),
         migrations.AddField(
-            model_name='student',
-            name='admission_year',
-            field=models.DateField(default=django.utils.timezone.now, verbose_name='입학연도'),
+            model_name="student",
+            name="admission_year",
+            field=models.DateField(
+                default=django.utils.timezone.now, verbose_name="입학연도"
+            ),
             preserve_default=False,
         ),
     ]

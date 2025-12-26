@@ -5,15 +5,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zindo', '0007_alter_sheet_is_finished'),
+        ("zindo", "0007_alter_sheet_is_finished"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='record',
-            name='created_at',
-            field=models.DateTimeField(default=django.utils.timezone.now, verbose_name='학습일'),
+            model_name="record",
+            name="created_at",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now, verbose_name="학습일"
+            ),
         ),
     ]

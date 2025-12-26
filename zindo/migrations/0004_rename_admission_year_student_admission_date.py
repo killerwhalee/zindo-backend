@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zindo', '0003_remove_student_birthday_student_admission_year'),
+        ("zindo", "0003_remove_student_birthday_student_admission_year"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='student',
-            old_name='admission_year',
-            new_name='admission_date',
+            model_name="student",
+            old_name="admission_year",
+            new_name="admission_date",
         ),
     ]

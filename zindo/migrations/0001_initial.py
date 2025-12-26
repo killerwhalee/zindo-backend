@@ -5,57 +5,120 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Sheet',
+            name="Sheet",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('pace', models.SmallIntegerField(blank=True, null=True, verbose_name='하루 목표 학습량')),
-                ('is_finished', models.BooleanField(default=False, verbose_name='완료 여부')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "pace",
+                    models.SmallIntegerField(
+                        blank=True, null=True, verbose_name="하루 목표 학습량"
+                    ),
+                ),
+                (
+                    "is_finished",
+                    models.BooleanField(default=False, verbose_name="완료 여부"),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Student',
+            name="Student",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=8, verbose_name='이름')),
-                ('birthday', models.DateField(verbose_name='생년월일')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=8, verbose_name="이름")),
+                ("birthday", models.DateField(verbose_name="생년월일")),
             ],
         ),
         migrations.CreateModel(
-            name='TextBook',
+            name="TextBook",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=32, verbose_name='교재명')),
-                ('subject', models.CharField(max_length=8, verbose_name='과목')),
-                ('isbn', models.CharField(blank=True, max_length=13, null=True, verbose_name='ISBN')),
-                ('image', models.URLField(blank=True, null=True, verbose_name='교재 이미지 링크')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=32, verbose_name="교재명")),
+                ("subject", models.CharField(max_length=8, verbose_name="과목")),
+                (
+                    "isbn",
+                    models.CharField(
+                        blank=True, max_length=13, null=True, verbose_name="ISBN"
+                    ),
+                ),
+                (
+                    "image",
+                    models.URLField(
+                        blank=True, null=True, verbose_name="교재 이미지 링크"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Record',
+            name="Record",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(verbose_name='학습일')),
-                ('progress', models.JSONField(verbose_name='진도상황')),
-                ('note', models.TextField(blank=True, null=True, verbose_name='메모')),
-                ('sheet', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zindo.sheet', verbose_name='기록지')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(verbose_name="학습일")),
+                ("progress", models.JSONField(verbose_name="진도상황")),
+                ("note", models.TextField(blank=True, null=True, verbose_name="메모")),
+                (
+                    "sheet",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="zindo.sheet",
+                        verbose_name="기록지",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='sheet',
-            name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='zindo.student', verbose_name='학생'),
+            model_name="sheet",
+            name="student",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="zindo.student",
+                verbose_name="학생",
+            ),
         ),
         migrations.AddField(
-            model_name='sheet',
-            name='textbook',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='zindo.textbook', verbose_name='교재'),
+            model_name="sheet",
+            name="textbook",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to="zindo.textbook",
+                verbose_name="교재",
+            ),
         ),
     ]

@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zindo', '0004_rename_admission_year_student_admission_date'),
+        ("zindo", "0004_rename_admission_year_student_admission_date"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='sheet',
-            name='pace',
-            field=models.SmallIntegerField(blank=True, default=4, verbose_name='하루 목표 학습량'),
+            model_name="sheet",
+            name="pace",
+            field=models.SmallIntegerField(
+                blank=True, default=4, verbose_name="하루 목표 학습량"
+            ),
         ),
     ]

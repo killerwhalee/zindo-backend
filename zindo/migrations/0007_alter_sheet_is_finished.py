@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zindo', '0006_alter_sheet_pace'),
+        ("zindo", "0006_alter_sheet_pace"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='sheet',
-            name='is_finished',
-            field=models.BooleanField(default=False, verbose_name='완료된 기록지'),
+            model_name="sheet",
+            name="is_finished",
+            field=models.BooleanField(default=False, verbose_name="완료된 기록지"),
         ),
     ]

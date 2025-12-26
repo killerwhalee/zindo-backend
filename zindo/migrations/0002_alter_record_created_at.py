@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('zindo', '0001_initial'),
+        ("zindo", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='record',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='학습일'),
+            model_name="record",
+            name="created_at",
+            field=models.DateTimeField(auto_now_add=True, verbose_name="학습일"),
         ),
     ]
