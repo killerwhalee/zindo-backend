@@ -15,6 +15,10 @@ class Student(models.Model):
         auto_now=False,
         auto_now_add=False,
     )
+    is_active = models.BooleanField(
+        "활성화된 아동",
+        default=True,
+    )
 
     def __str__(self):
         return (

@@ -27,6 +27,7 @@ class StudentSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "admission_date",
+            "is_active",
             "grade",
             "count_on_progress",
             "count_finished",
