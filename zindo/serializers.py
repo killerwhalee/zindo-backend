@@ -7,7 +7,9 @@ from . import models, utils
 
 class StudentSerializer(serializers.ModelSerializer):
     object = serializers.SerializerMethodField()
-    grade = serializers.SerializerMethodField()
+    grade = serializers.SerializerMethodField(
+        read_only=True,
+    )
     count_on_progress = serializers.IntegerField(
         read_only=True,
     )
@@ -24,6 +26,7 @@ class StudentSerializer(serializers.ModelSerializer):
             "object",
             "id",
             "name",
+            "admission_date",
             "grade",
             "count_on_progress",
             "count_finished",
@@ -32,7 +35,6 @@ class StudentSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "object",
             "id",
-            "grade",
         ]
 
     def get_object(self, _):
