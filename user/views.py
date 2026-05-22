@@ -14,10 +14,13 @@ from . import models, serializers
 
 
 def _send_verification_email(user):
-    token, _ = models.EmailVerificationToken.objects.get_or_create(user=user)
-    token.token = uuid.uuid4()
-    token.expires_at = timezone.now() + datetime.timedelta(hours=24)
-    token.save()
+    token, _ = models.EmailVerificationToken.objects.update_or_create(
+        user=user,
+        defaults={
+            "token": uuid.uuid4(),
+            "expires_at": timezone.now() + datetime.timedelta(hours=24),
+        },
+    )
 
     verify_url = f"{settings.API_BASE_URL}/user/verify-email/?token={token.token}"
     send_mail(
