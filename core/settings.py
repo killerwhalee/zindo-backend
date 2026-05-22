@@ -26,11 +26,13 @@ ALLOWED_HOSTS = [
     "api.zindo.online",
     "localhost",
     "127.0.0.1",
+    "192.168.1.101",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "https://zindo.online",
     "http://localhost:5173",
+    "https://192.168.1.101:5173",
 ]
 
 
