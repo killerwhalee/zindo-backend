@@ -22,7 +22,7 @@ def _send_verification_email(user):
         },
     )
 
-    verify_url = f"{settings.API_BASE_URL}/user/auth/verify-email/?token={token.token}"
+    verify_url = f"{settings.FRONTEND_URL}/user/verify-email?token={token.token}"
     send_mail(
         subject="[Zindo] 이메일 인증",
         message=f"아래 링크를 클릭하여 이메일을 인증하세요:\n\n{verify_url}",
