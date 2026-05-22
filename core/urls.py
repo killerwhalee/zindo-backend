@@ -6,6 +6,7 @@ urlpatterns = [
     # Admin page / healthchecker
     path("admin/", admin.site.urls),
     path("", lambda _: HttpResponse("zindo!")),
-    # User app routing
+    # App routing
+    path("user/", include("user.urls")),
     path("zindo/", include("zindo.urls")),
 ]
