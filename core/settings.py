@@ -22,18 +22,9 @@ DEBUG = True
 
 # Host settings
 
-ALLOWED_HOSTS = [
-    "api.zindo.online",
-    "localhost",
-    "127.0.0.1",
-    "192.168.1.101",
-]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
-CORS_ALLOWED_ORIGINS = [
-    "https://zindo.online",
-    "http://localhost:5173",
-    "https://192.168.1.101:5173",
-]
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS")
 
 
 # Application definition
