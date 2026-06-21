@@ -1,3 +1,4 @@
+import django_filters
 from django.db.models import Count, Exists, OuterRef, Q
 from django.utils import timezone
 from rest_framework import filters, viewsets
@@ -5,6 +6,21 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from . import models, serializers, utils
+
+
+class RecordFilter(django_filters.FilterSet):
+    created_at__date__gte = django_filters.DateFilter(
+        field_name="created_at__date",
+        lookup_expr="gte",
+    )
+    created_at__date__lte = django_filters.DateFilter(
+        field_name="created_at__date",
+        lookup_expr="lte",
+    )
+
+    class Meta:
+        model = models.Record
+        fields = ["sheet__id", "sheet__student__id"]
 
 
 class StudentViewSet(viewsets.ModelViewSet):
@@ -95,4 +111,4 @@ class SheetViewSet(viewsets.ModelViewSet):
 class RecordViewSet(viewsets.ModelViewSet):
     queryset = models.Record.objects.all().order_by("-created_at")
     serializer_class = serializers.RecordSerializer
-    filterset_fields = ["sheet__id"]
+    filterset_class = RecordFilter
