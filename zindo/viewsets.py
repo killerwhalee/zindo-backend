@@ -112,3 +112,8 @@ class RecordViewSet(viewsets.ModelViewSet):
     queryset = models.Record.objects.all().order_by("-created_at")
     serializer_class = serializers.RecordSerializer
     filterset_class = RecordFilter
+
+
+class StatsBatchViewSet(viewsets.ModelViewSet):
+    queryset = models.StatsBatch.objects.all().order_by("-created_at")
+    serializer_class = serializers.StatsBatchSerializer

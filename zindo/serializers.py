@@ -239,3 +239,19 @@ class RecordSerializer(serializers.ModelSerializer):
 
     def get_object(self, _):
         return "record"
+
+
+class StatsBatchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.StatsBatch
+        fields = [
+            "id",
+            "title",
+            "start_date",
+            "end_date",
+            "student_ids",
+            "student_newsletters",
+            "global_newsletter",
+            "created_at",
+        ]
+        read_only_fields = ["id", "created_at"]

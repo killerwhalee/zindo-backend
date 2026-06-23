@@ -127,3 +127,16 @@ class Record(models.Model):
         return (
             f"[{self.__class__.__name__} #{self.id:04d}] {self.sheet} {self.created_at}"
         )
+
+
+class StatsBatch(models.Model):
+    title = models.CharField("제목", max_length=64)
+    start_date = models.DateField("시작일", null=True, blank=True)
+    end_date = models.DateField("종료일", null=True, blank=True)
+    student_ids = models.JSONField("학생 ID 목록", default=list)
+    student_newsletters = models.JSONField("개별 가정통신문", default=dict)
+    global_newsletter = models.TextField("전체 가정통신문", blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"[{self.__class__.__name__} #{self.id:04d}] {self.title}"
