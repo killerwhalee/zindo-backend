@@ -22,5 +22,9 @@ router.register(
     "records",
     viewsets.RecordViewSet,
 )
+router.register(
+    "stats-batches",
+    viewsets.StatsBatchViewSet,
+)
 
 urlpatterns = router.urls
